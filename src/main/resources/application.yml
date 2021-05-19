@@ -58,10 +58,10 @@ server:
   #  服务器应该绑定的网络地址
   #  address: 0.0.0.0
   #  是否启用响应压缩。
-#  compression:
-#    enabled: true
-    #    执行压缩所需的最小 "内容-长度 "值
-#    min-response-size: 2KB
+  #  compression:
+  #    enabled: true
+  #    执行压缩所需的最小 "内容-长度 "值
+  #    min-response-size: 2KB
 
   port: 9000
 

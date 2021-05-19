@@ -27,7 +27,7 @@ public class LoginHandle {
     public Mono<ServerResponse> login(ServerRequest request) {
         Mono<LoginModel> people = request.bodyToMono(LoginModel.class);
         return people
-                .filter(f-> Objects.nonNull(f.getAccount()) && Objects.nonNull(f.getPassword()))
+                .filter(f -> Objects.nonNull(f.getAccount()) && Objects.nonNull(f.getPassword()))
                 .flatMap(f -> {
                     if ("123".equals(f.getAccount()) && "123".equals(f.getPassword())) {
                         return ResultUtil2.ok("token");
