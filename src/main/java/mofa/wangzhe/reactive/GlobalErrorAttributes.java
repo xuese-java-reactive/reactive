@@ -27,8 +27,8 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
             map.put("status", HttpStatus.NOT_FOUND);
             map.put("message", "资源未找到");
         } else {
-            map.put("status", HttpStatus.NOT_FOUND);
-            map.put("message", "资源未找到");
+            map.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+            map.put("message", "资源错误");
         }
         return map;
     }

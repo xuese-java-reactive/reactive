@@ -17,6 +17,8 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 /**
+ * spring 全局错误处理
+ *
  * @author LD
  */
 
