@@ -2,7 +2,9 @@ package mofa.wangzhe.reactive.handle;
 
 import lombok.extern.slf4j.Slf4j;
 import mofa.wangzhe.reactive.model.LoginModel;
+import mofa.wangzhe.reactive.sys.security.JwtUtil;
 import mofa.wangzhe.reactive.util.result.ResultUtil2;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -29,11 +31,17 @@ public class LoginHandle {
         return people
                 .filter(f -> Objects.nonNull(f.getAccount()) && Objects.nonNull(f.getPassword()))
                 .flatMap(f -> {
-                    if ("123".equals(f.getAccount()) && "123".equals(f.getPassword())) {
-                        return ResultUtil2.ok("token");
-                    } else {
-                        return ResultUtil2.err("账号或密码错误");
-                    }
+//                    if ("123".equals(f.getAccount()) && "123".equals(f.getPassword())) {
+//                        return ResultUtil2.ok("token");
+//                    } else {
+//                        return ResultUtil2.err("账号或密码错误");
+//                    }
+                    String jwt = JwtUtil.createJwt(String.valueOf(1), f.getAccount());
+                    return ServerResponse
+                            .ok()
+                            .header("auth", jwt)
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue("成功");
                 })
                 .switchIfEmpty(ResultUtil2.err("账号或密码不能为空"));
     }

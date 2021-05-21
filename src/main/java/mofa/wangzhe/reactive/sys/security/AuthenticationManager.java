@@ -1,56 +1,41 @@
 package mofa.wangzhe.reactive.sys.security;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.interfaces.Claim;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
+import org.springframework.security.web.server.authorization.AuthorizationContext;
 import reactor.core.publisher.Mono;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 身份在验证管理器
- * 负责校验Authentication 对象
  *
  * @author LD
  */
-@Component
-public class AuthenticationManager implements ReactiveAuthenticationManager {
+public class AuthenticationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
 
+    /**
+     * 权限
+     *
+     * @param mono                 身份
+     * @param authorizationContext 上下文
+     * @return
+     */
     @Override
-    public Mono<Authentication> authenticate(Authentication authentication) {
-        String authToekn = authentication.getCredentials().toString();
-        try {
-            Claim iss = JwtUtil.getClaim(authToekn, "iss");
-            if (iss == null) {
-                throw new JWTDecodeException("令牌解析错误");
-            }
-            if (!JwtUtil.ISS.equals(iss.asString())) {
-                throw new BadCredentialsException("非法令牌");
-            }
+    public Mono<AuthorizationDecision> check(Mono<Authentication> mono, AuthorizationContext authorizationContext) {
+//        //从Redis中获取当前路径可访问角色列表
+//        URIuri = authorizationContext.getExchange().getRequest().getURI();
+//        Objectobj = redisTemplate.opsForHash().get(RedisConstant.RESOURCE_ROLES_MAP, uri.getPath());
+//        List<String> authorities = Convert.toList(String.class, obj);
+//        authorities = authorities.stream().map(i -> i = AuthConstant.AUTHORITY_PREFIX + i).collect(Collectors.toList());
+////认证通过且角色匹配的用户可访问当前路径
+//        returnmono
+//                .filter(Authentication::isAuthenticated)
+//                .flatMapIterable(Authentication::getAuthorities)
+//                .map(GrantedAuthority::getAuthority)
+//                .any(authorities::contains)
+//                .map(AuthorizationDecision::new)
+//                .defaultIfEmpty(newAuthorizationDecision(false));
 
-            Claim claim = JwtUtil.getClaim(authToekn, "user");
-            // 此处应该列出token中携带的角色表。
-            List<String> roles = new ArrayList<>();
-            roles.add("user");
-            if (claim != null) {
-                Authentication authentication1 = new UsernamePasswordAuthenticationToken(
-                        claim.asString(),
-                        null,
-                        roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
-                );
-                return Mono.just(authentication1);
-            } else {
-                throw new JWTDecodeException("令牌解析错误");
-            }
-        } catch (Exception e) {
-            throw new BadCredentialsException(e.getMessage());
-        }
+        return Mono.just(new AuthorizationDecision(true));
     }
 }
