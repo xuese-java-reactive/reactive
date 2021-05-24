@@ -15,7 +15,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
  * @author LD
  */
 @Configuration
-@EnableWebFluxSecurity
 @Order(99)
 @Slf4j
 public class WebSecurityConfig {
@@ -27,7 +26,10 @@ public class WebSecurityConfig {
     public static final String[] EXCLUDED_AUTH_PAGES = {
             "/page/**",
             "/webjars/**",
-            "/api/login/login"
+            "/api/login/login",
+            "/js/**",
+            "/css/**",
+            "/img/**"
     };
 
     /**

@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
  *
  * @author LD
  */
-@Component
 public class RestfulAccessDeniedHandler implements ServerAccessDeniedHandler {
 
     @Override

@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
  * @author LD
  * //@description 认证信息失效（未认证或者认证信息过期）处理器
  */
-@Component
 public class RestfulAuthenticationEntryPoint implements ServerAuthenticationEntryPoint {
 
     @Override

@@ -40,8 +40,8 @@ public class LoginHandle {
                     return ServerResponse
                             .ok()
                             .header("auth", jwt)
-                            .contentType(MediaType.TEXT_HTML)
-                            .bodyValue("成功");
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue(new ResultUtil2(true, "成功", null));
                 })
                 .switchIfEmpty(ResultUtil2.err("账号或密码不能为空"));
     }
