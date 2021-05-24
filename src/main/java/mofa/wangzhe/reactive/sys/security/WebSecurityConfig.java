@@ -29,7 +29,9 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/js/**",
             "/css/**",
-            "/img/**"
+            "/img/**",
+            "**.woff2",
+            "/"
     };
 
     /**
