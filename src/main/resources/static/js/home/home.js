@@ -1,11 +1,10 @@
 $(function(){
+    //默认首页
+    toHtml('/page/home/right');
 })
 
-
-//默认首页
-//toHtml('/page/home/index');
 function toHtml(obj){
-    $('#contents').load(obj);
+    $('#content-wrapper').load(obj);
 }
 
 //注销

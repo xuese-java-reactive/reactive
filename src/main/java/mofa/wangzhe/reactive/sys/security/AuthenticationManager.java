@@ -23,7 +23,7 @@ public class AuthenticationManager implements ReactiveAuthorizationManager<Autho
      *
      * @param mono                 身份
      * @param authorizationContext 上下文
-     * @return
+     * @return Mono<AuthorizationDecision>
      */
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> mono, AuthorizationContext authorizationContext) {
@@ -42,7 +42,7 @@ public class AuthenticationManager implements ReactiveAuthorizationManager<Autho
 //                .defaultIfEmpty(newAuthorizationDecision(false));
         ServerHttpRequest request = authorizationContext.getExchange().getRequest();
         RequestPath path = request.getPath();
-        log.info("当前请求路径：{}",path.value());
+        log.info("当前请求路径：{}", path.value());
         return Mono.just(new AuthorizationDecision(true));
     }
 }
