@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
@@ -24,9 +23,10 @@ public class WebSecurityConfig {
      * security的鉴权排除的url列表
      */
     public static final String[] EXCLUDED_AUTH_PAGES = {
+            "/api/login/login",
+            "/favicon.ico",
             "/page/**",
             "/webjars/**",
-            "/api/login/login",
             "/js/**",
             "/css/**",
             "/img/**"

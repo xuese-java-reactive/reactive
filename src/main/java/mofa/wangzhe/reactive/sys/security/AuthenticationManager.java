@@ -1,5 +1,8 @@
 package mofa.wangzhe.reactive.sys.security;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.server.RequestPath;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -11,6 +14,8 @@ import reactor.core.publisher.Mono;
  *
  * @author LD
  */
+
+@Slf4j
 public class AuthenticationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
 
     /**
@@ -35,7 +40,9 @@ public class AuthenticationManager implements ReactiveAuthorizationManager<Autho
 //                .any(authorities::contains)
 //                .map(AuthorizationDecision::new)
 //                .defaultIfEmpty(newAuthorizationDecision(false));
-
+        ServerHttpRequest request = authorizationContext.getExchange().getRequest();
+        RequestPath path = request.getPath();
+        log.info("当前请求路径：{}",path.value());
         return Mono.just(new AuthorizationDecision(true));
     }
 }
