@@ -105,6 +105,12 @@
             <artifactId>AdminLTE</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.webjars.bower/ztree -->
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>ztree</artifactId>
+            <version>3.5.0</version>
+        </dependency>
 
     </dependencies>
 

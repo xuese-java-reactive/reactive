@@ -1,85 +1,56 @@
 package mofa.wangzhe.reactive.sys.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import reactor.core.publisher.Mono;
 
 /**
  * 过滤连
+ * 参考网络从新实现security相关配置
+ * 参考：https://github.com/ard333/spring-boot-webflux-jjwt/blob/master/src/main/java/com/ard333/springbootwebfluxjjwt/security/WebSecurityConfig.java
+ * //WebSecurityConfigurerAdapter
  *
  * @author LD
  */
-@Configuration
-@Order(99)
+
+
 @Slf4j
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 public class WebSecurityConfig {
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    /**
-     * security的鉴权排除的url列表
-     */
-    public static final String[] EXCLUDED_AUTH_PAGES = {
-            "/api/login/login",
-            "/favicon.ico",
-            "/page/**",
-            "/webjars/**",
-            "/js/**",
-            "/css/**",
-            "/img/**",
-            "**.woff2",
-            "/"
-    };
-
-    /**
-     * 只需要登录就可以操作的url
-     */
-    public static final String[] AUTHENTICATED_PAGES = {
-            "/api/**"
-    };
+    @Autowired
+    private SecurityContextRepository securityContextRepository;
 
     @Bean
-    SecurityWebFilterChain webFluxSecurityFilterChain(ServerHttpSecurity http) {
-
-        http.securityContextRepository(new NoOpServerSecurityContextAutoRepository())
-                .httpBasic().disable()
-                .formLogin().disable()
+    public SecurityWebFilterChain securitygWebFilterChain(ServerHttpSecurity http) {
+        return http
+                .exceptionHandling()
+                .authenticationEntryPoint((swe, e) -> Mono.fromRunnable(() -> {
+                    swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                })).accessDeniedHandler((swe, e) -> Mono.fromRunnable(() -> {
+                    swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                })).and()
                 .csrf().disable()
-                .logout().disable()
-
-//                options所有请求都直接放行
+                .formLogin().disable()
+                .httpBasic().disable()
+                .authenticationManager(authenticationManager)
+                .securityContextRepository(securityContextRepository)
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                .and()
-
-//                不需要拦截验证的
-                .authorizeExchange()
-                .pathMatchers(EXCLUDED_AUTH_PAGES).permitAll()
-                .and()
-
-//                需要拦截验证的
-                .authorizeExchange()
-                .pathMatchers(AUTHENTICATED_PAGES).authenticated()
-                .and()
-
-//               未授权
-                .exceptionHandling()
-                .accessDeniedHandler(new RestfulAccessDeniedHandler())
-                .and()
-
-//                认证失败
-                .exceptionHandling()
-                .authenticationEntryPoint(new RestfulAuthenticationEntryPoint())
-                .and()
-
-                .authorizeExchange()
-                .pathMatchers("/**").access(new AuthenticationManager())
-                .anyExchange().authenticated();
-        return http.build();
+                .pathMatchers("/login").permitAll()
+                .anyExchange().authenticated()
+                .and().build();
     }
-
 
 }

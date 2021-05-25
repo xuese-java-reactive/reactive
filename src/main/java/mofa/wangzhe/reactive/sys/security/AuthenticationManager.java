@@ -1,13 +1,16 @@
 package mofa.wangzhe.reactive.sys.security;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.server.RequestPath;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.authorization.ReactiveAuthorizationManager;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.server.authorization.AuthorizationContext;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 身份在验证管理器
@@ -16,33 +19,27 @@ import reactor.core.publisher.Mono;
  */
 
 @Slf4j
-public class AuthenticationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
+@Component
+public class AuthenticationManager implements ReactiveAuthenticationManager {
 
-    /**
-     * 权限
-     *
-     * @param mono                 身份
-     * @param authorizationContext 上下文
-     * @return Mono<AuthorizationDecision>
-     */
     @Override
-    public Mono<AuthorizationDecision> check(Mono<Authentication> mono, AuthorizationContext authorizationContext) {
-//        //从Redis中获取当前路径可访问角色列表
-//        URIuri = authorizationContext.getExchange().getRequest().getURI();
-//        Objectobj = redisTemplate.opsForHash().get(RedisConstant.RESOURCE_ROLES_MAP, uri.getPath());
-//        List<String> authorities = Convert.toList(String.class, obj);
-//        authorities = authorities.stream().map(i -> i = AuthConstant.AUTHORITY_PREFIX + i).collect(Collectors.toList());
-////认证通过且角色匹配的用户可访问当前路径
-//        returnmono
-//                .filter(Authentication::isAuthenticated)
-//                .flatMapIterable(Authentication::getAuthorities)
-//                .map(GrantedAuthority::getAuthority)
-//                .any(authorities::contains)
-//                .map(AuthorizationDecision::new)
-//                .defaultIfEmpty(newAuthorizationDecision(false));
-        ServerHttpRequest request = authorizationContext.getExchange().getRequest();
-        RequestPath path = request.getPath();
-        log.info("当前请求路径：{}", path.value());
-        return Mono.just(new AuthorizationDecision(true));
+    public Mono<Authentication> authenticate(Authentication authentication) {
+        String token = authentication.getCredentials().toString();
+        try {
+            String accId = Objects.requireNonNull(JwtUtil.getClaim(token, "aud")).asString();
+
+            List<GrantedAuthority> authorities = new ArrayList<>();
+
+//            TODO 根据accId查询数据库，获取角色、权限等信息
+//            List<String> rolesMap = new ArrayList<>(0);
+//            for (String rolemap : rolesMap) {
+//                authorities.add(new SimpleGrantedAuthority(rolemap));
+//            }
+
+            return Mono.just(new UsernamePasswordAuthenticationToken(accId, token, authorities));
+        } catch (NullPointerException e) {
+            return Mono.empty();
+        }
     }
+
 }

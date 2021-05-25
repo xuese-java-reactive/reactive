@@ -2,6 +2,7 @@ package mofa.wangzhe.reactive.router;
 
 import lombok.extern.slf4j.Slf4j;
 import mofa.wangzhe.reactive.handle.LoginHandle;
+import mofa.wangzhe.reactive.handle.MenuHandle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -21,7 +22,8 @@ public class Routers implements WebFluxConfigurer {
 
     @Bean
     public RouterFunction<ServerResponse> initRouterFunction(
-            LoginHandle loginHandle
+            LoginHandle loginHandle,
+            MenuHandle menuHandle
 
     ) {
         return RouterFunctions.nest(
@@ -31,6 +33,15 @@ public class Routers implements WebFluxConfigurer {
                         RouterFunctions.route(
                                 RequestPredicates.POST("/login"),
                                 loginHandle::login
+                        )
+                ).andNest(
+                        RequestPredicates.path("/menu"),
+                        RouterFunctions.route(
+                                RequestPredicates.POST("/menu"),
+                                menuHandle::save
+                        ).andRoute(
+                                RequestPredicates.GET("/menu/{pid}"),
+                                menuHandle::list
                         )
                 )
         );
