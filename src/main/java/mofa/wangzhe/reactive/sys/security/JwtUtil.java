@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 
 @Slf4j
+@Component
 public class JwtUtil {
 
     /**
@@ -37,7 +39,7 @@ public class JwtUtil {
      * @param userId 用户id
      * @return token串
      */
-    public static String createJwt(String userId, String account) {
+    public String createJwt(String userId, String account) {
 
         Calendar instance = Calendar.getInstance();
         Date time1 = instance.getTime();

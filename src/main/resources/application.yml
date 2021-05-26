@@ -32,16 +32,6 @@ spring:
     #    数据库的登录用户名
     username: root
 
-  #webflux
-  webflux:
-    #    根路径
-    base-path: /
-    #日期格式
-    format:
-      date: yyyy-MM-dd
-      date-time: yyyy-MM-dd HH:mm:ss
-      time: HH:mm:ss
-
   thymeleaf:
     encoding: UTF-8
     mode: LEGACYHTML5

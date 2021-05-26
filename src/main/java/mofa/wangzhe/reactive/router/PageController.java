@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import reactor.core.publisher.Mono;
 
 
 /**
@@ -20,8 +21,8 @@ public class PageController {
     }
 
     @GetMapping("/page/{path}/{page}")
-    public String page(@PathVariable("path") String path,
-                       @PathVariable("page") String page) {
-        return path + "/" + page + ".html";
+    public Mono<String> page(@PathVariable("path") String path,
+                             @PathVariable("page") String page) {
+        return Mono.create(e -> e.success(path + "/" + page + ".html"));
     }
 }

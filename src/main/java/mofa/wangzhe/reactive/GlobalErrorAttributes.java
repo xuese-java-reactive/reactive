@@ -1,5 +1,7 @@
 package mofa.wangzhe.reactive;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
@@ -24,6 +26,8 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
 
     @Override
     public Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
+        String path = request.path();
+        log.info("当前请求路径：{}", path);
         Map<String, Object> map = super.getErrorAttributes(request, options);
         Throwable error = getError(request);
         log.error(error.getMessage(), error);
@@ -33,6 +37,15 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
         } else if (error instanceof ResponseStatusException) {
             map.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
             map.put("message", error.getMessage());
+        } else if (error instanceof IllegalStateException) {
+            map.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+            map.put("message", error.getMessage());
+        } else if (error instanceof TokenExpiredException) {
+            map.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+            map.put("message", error.getMessage());
+        } else if (error instanceof JWTDecodeException) {
+            map.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+            map.put("message", "令牌解析异常，请从新登录");
         } else {
             map.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
             map.put("message", "资源错误");

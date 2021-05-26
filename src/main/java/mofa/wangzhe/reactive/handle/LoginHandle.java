@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import mofa.wangzhe.reactive.model.LoginModel;
 import mofa.wangzhe.reactive.sys.security.JwtUtil;
 import mofa.wangzhe.reactive.util.result.ResultUtil2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -19,6 +20,13 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class LoginHandle {
+
+    private final JwtUtil jwtUtil;
+
+    @Autowired
+    public LoginHandle(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     /**
      * 登录
@@ -36,12 +44,11 @@ public class LoginHandle {
 //                    } else {
 //                        return ResultUtil2.err("账号或密码错误");
 //                    }
-                    String jwt = JwtUtil.createJwt(String.valueOf(1), f.getAccount());
+                    String jwt = jwtUtil.createJwt(String.valueOf(1), f.getAccount());
                     return ServerResponse
                             .ok()
-                            .header("auth", jwt)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .bodyValue(new ResultUtil2(true, "成功", null));
+                            .bodyValue(new ResultUtil2(true, "成功", jwt));
                 })
                 .switchIfEmpty(ResultUtil2.err("账号或密码不能为空"));
     }

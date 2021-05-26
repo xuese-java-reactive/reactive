@@ -4,7 +4,19 @@ $(function(){
 })
 
 function toHtml(obj){
-    $('#content-wrapper').load('/page/'+obj);
+    $.ajax({
+        url:'/page/'+obj,
+        dataType:"html",
+        type:"GET",
+        success:function(req){
+            $('#content-wrapper').html(req)
+        },
+        complete:function(){
+        },
+        error:function(e){
+            console.log("error",e);
+        }
+    });
 }
 
 //注销

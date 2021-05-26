@@ -19,16 +19,13 @@ import reactor.core.publisher.Mono;
 @Component
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
-    private final AuthenticationManager authenticationManager;
-
     @Autowired
-    public SecurityContextRepository(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+    private AuthenticationManager authenticationManager;
+
 
     @Override
     public Mono<Void> save(ServerWebExchange swe, SecurityContext sc) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Mono.empty();
     }
 
     @Override
@@ -37,7 +34,7 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
         String authToken = request.getHeaders().getFirst("auth");
 
         if (StringUtils.hasText(authToken)) {
-            Authentication auth = new UsernamePasswordAuthenticationToken("password", authToken);
+            Authentication auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
             return this.authenticationManager.authenticate(auth).map(SecurityContextImpl::new);
         } else {
             return Mono.empty();

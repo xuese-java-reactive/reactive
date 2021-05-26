@@ -12,6 +12,7 @@ $(function(){
             },
             success:function(req){
                 if(req.state){
+                    localStorage.setItem("auth",req.data);
                     location.replace("/page/home/home");
                 }else{
                     alert(req.msg)
