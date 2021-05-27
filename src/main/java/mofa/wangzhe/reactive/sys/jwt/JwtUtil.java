@@ -1,4 +1,4 @@
-package mofa.wangzhe.reactive.sys.security;
+package mofa.wangzhe.reactive.sys.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

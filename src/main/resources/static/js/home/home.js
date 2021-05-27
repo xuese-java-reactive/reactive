@@ -12,9 +12,6 @@ function toHtml(obj){
             $('#content-wrapper').html(req)
         },
         complete:function(){
-        },
-        error:function(e){
-            console.log("error",e);
         }
     });
 }

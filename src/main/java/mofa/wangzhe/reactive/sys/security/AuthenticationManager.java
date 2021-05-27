@@ -1,6 +1,7 @@
 package mofa.wangzhe.reactive.sys.security;
 
 import lombok.extern.slf4j.Slf4j;
+import mofa.wangzhe.reactive.sys.jwt.JwtUtil;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
